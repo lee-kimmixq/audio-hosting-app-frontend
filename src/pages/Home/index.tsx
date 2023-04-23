@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
 import useFetch from '../../hooks/useFetch'
+import { useAuth } from '../../contexts/AuthContext'
 
 interface LoginPayload {
   username: string
@@ -31,7 +32,14 @@ const errorMessageMap: { [x in LoginError]: string } = {
 }
 
 export function Home() {
+  const { isLoggedIn } = useAuth()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/dashboard')
+    }
+  }, [isLoggedIn])
 
   const usernameRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
@@ -77,7 +85,7 @@ export function Home() {
 
   return (
     <Grid container justifyContent="center" my={10}>
-      <Grid container flexDirection="column" xs={6} rowGap={2}>
+      <Grid item container flexDirection="column" xs={6} rowGap={2}>
         <Typography variant="h4" textAlign="center">
           Log In
         </Typography>
