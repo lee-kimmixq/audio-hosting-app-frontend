@@ -60,7 +60,7 @@ export function Layout({ isLoggedIn }: { isLoggedIn: boolean | null }) {
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
+        <AppBar position="fixed" sx={{ top: 0, width: '100%' }}>
           <Toolbar>
             <Typography
               variant="h6"

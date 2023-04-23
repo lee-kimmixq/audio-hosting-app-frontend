@@ -1,5 +1,6 @@
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
+import CircularProgress from '@mui/material/CircularProgress'
 import { useEffect, useState } from 'react'
 import { Card } from '../../components/Card'
 import { REACT_APP_BACKEND_URL } from '../../config'
@@ -31,7 +32,11 @@ export function Dashboard() {
   }, [data, loading])
 
   if (loading) {
-    return <h1>Loading</h1>
+    return (
+      <Grid container justifyContent="center" my={10}>
+        <CircularProgress />
+      </Grid>
+    )
   }
 
   if (!list?.files?.length) {
@@ -45,7 +50,7 @@ export function Dashboard() {
   }
 
   return (
-    <Grid container justifyContent="center" my={10} rowGap={2}>
+    <Grid container justifyContent="center" my={10} rowGap={3}>
       {list?.files?.map((file) => (
         <Card key={file.id} file={file} />
       ))}
