@@ -8,11 +8,14 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import Autocomplete from '@mui/material/Autocomplete'
 import AddIcon from '@mui/icons-material/Add'
+import AudioFileIcon from '@mui/icons-material/AudioFile'
+import UploadIcon from '@mui/icons-material/Upload'
 
 import AddCategoryDialog from './AddCategoryDialog'
 import { REACT_APP_BACKEND_URL } from '../../config'
 import useFetch from '../../hooks/useFetch'
 import { Category } from '../../types/shared'
+import usePostFormData from '../../hooks/usePostFormData'
 
 interface Categories {
   categories: Category[]
@@ -26,7 +29,7 @@ enum UploadError {
 
 const errorMessageMap: { [x in UploadError]: string } = {
   [UploadError.CATEGORY_NOT_FOUND]: 'Category not found',
-  [UploadError.BLANK_FIELD]: 'Please upload a file',
+  [UploadError.BLANK_FIELD]: 'Please choose a file',
   [UploadError.UNKNOWN]: 'An unknown error occurred',
 }
 
@@ -41,10 +44,10 @@ export function Upload() {
   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false)
   const [uploadError, setUploadError] = useState<UploadError | null>(null)
   const [categoryId, setCategoryId] = useState<string | null>(null)
-  console.log({ categoryId })
+  const [fileContents, setFileContents] = useState<File | null>(null)
 
   const descriptionRef = useRef<HTMLInputElement>(null)
-  const pathRef = useRef<HTMLInputElement>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
 
   const {
     data: allCategories,
@@ -73,7 +76,7 @@ export function Upload() {
     renderFetch: uploadFile,
     error: uploadFileError,
     loading: uploadFileLoading,
-  } = useFetch<{ file: File }>(`${REACT_APP_BACKEND_URL}/file/new`, 'POST')
+  } = usePostFormData<{ file: File }>(`${REACT_APP_BACKEND_URL}/file/new`)
 
   useEffect(() => {
     if (uploadFileLoading) return
@@ -82,9 +85,9 @@ export function Upload() {
     }
     if (uploadFileError) {
       setUploadSuccess(false)
-      if (descriptionRef.current && pathRef.current) {
+      if (descriptionRef.current && fileRef.current) {
         descriptionRef.current.value = ''
-        pathRef.current.value = ''
+        fileRef.current.value = ''
       }
       if (uploadFileError.code === 'AHA-CATEGORY-NOT-FOUND') {
         setUploadError(UploadError.CATEGORY_NOT_FOUND)
@@ -94,20 +97,30 @@ export function Upload() {
     }
   }, [uploadFileResponse, uploadFileError, uploadFileLoading])
 
+  const handleUploadFileClick = () => {
+    if (fileRef?.current) fileRef.current.click()
+  }
+
   const handleSubmit = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
       event.preventDefault()
 
-      const description = descriptionRef.current?.value
-      const path = pathRef.current?.value
-      if (!path) {
+      if (!fileContents) {
         setUploadError(UploadError.BLANK_FIELD)
         return
       }
+
+      const description = descriptionRef.current?.value
+
+      const formData = new FormData()
+      if (description) formData.append('description', description)
+      if (categoryId) formData.append('categoryId', categoryId)
+      formData.append('audiofile', fileContents, fileContents?.name)
+
       setUploadError(null)
-      uploadFile({ description, path, categoryId })
+      uploadFile(formData)
     },
-    [categoryId]
+    [categoryId, fileContents]
   )
 
   const handleDashboard = useCallback(() => {
@@ -125,6 +138,18 @@ export function Upload() {
 
   return (
     <>
+      <input
+        ref={fileRef}
+        style={{ display: 'none' }}
+        type="file"
+        accept="audio/*"
+        onChange={(event) => {
+          if (event.target.files) {
+            setFileContents(event.target.files[0])
+          }
+        }}
+      />
+
       <Grid container justifyContent="center" my={10}>
         <Grid item container flexDirection="column" xs={6} rowGap={2}>
           <Typography variant="h4" textAlign="center">
@@ -136,13 +161,17 @@ export function Upload() {
           {uploadError && (
             <Alert severity="error">{errorMessageMap[uploadError]}</Alert>
           )}
+          <Button variant="text" onClick={handleUploadFileClick}>
+            {fileContents ? <AudioFileIcon /> : <UploadIcon />}
+            {fileContents ? fileContents?.name : 'Choose File'}
+          </Button>
           <TextField
             inputRef={descriptionRef}
             label="Description"
             multiline
             minRows={3}
           />
-          <TextField required inputRef={pathRef} label="Path" />
+
           <Grid container alignItems="center">
             <Grid item xs={10}>
               <Autocomplete

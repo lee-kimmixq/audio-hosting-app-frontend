@@ -2,9 +2,7 @@ import Box from '@mui/material/Box'
 import MuiCard from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
-import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import Stack from '@mui/material/Stack'
 
 import { File } from '../../types/shared'
@@ -49,9 +47,14 @@ export function Card({ file }: CardProps) {
             pr: 3,
           }}
         >
-          <IconButton aria-label="play/pause">
-            <PlayArrowIcon sx={{ height: 38, width: 38 }} />
-          </IconButton>
+          <audio controls>
+            <track kind="captions" />
+            <source src={file?.path} type="audio/mpeg" />
+            <p>
+              Your browser does not support HTML audio, but you can still
+              <a href="audiofile.mp3">download the music</a>.
+            </p>
+          </audio>
         </Box>
       </Box>
     </MuiCard>
