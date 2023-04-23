@@ -83,6 +83,10 @@ export function Home() {
     login({ username, password })
   }, [])
 
+  const handleSignup = useCallback(() => {
+    navigate('/signup')
+  }, [])
+
   return (
     <Grid container justifyContent="center" my={10}>
       <Grid item container flexDirection="column" xs={6} rowGap={2}>
@@ -101,6 +105,9 @@ export function Home() {
         />
         <Button variant="contained" onClick={handleSubmit} type="submit">
           Log In
+        </Button>
+        <Button variant="outlined" onClick={handleSignup}>
+          Don&apos;t have an account yet? Sign Up Here
         </Button>
       </Grid>
     </Grid>
