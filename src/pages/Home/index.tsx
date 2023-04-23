@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
+import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 
 import useFetch from '../../hooks/useFetch'
 
@@ -19,6 +22,12 @@ enum LoginError {
   BLANK_FIELD = 'BLANK_FIELD',
   INVALID = 'INVALID',
   UNKNOWN = 'UNKNOWN',
+}
+
+const errorMessageMap: { [x in LoginError]: string } = {
+  [LoginError.BLANK_FIELD]: 'Please fill in your username and password',
+  [LoginError.INVALID]: 'Wrong username or password',
+  [LoginError.UNKNOWN]: 'An unknown error occurred',
 }
 
 export function Home() {
@@ -67,18 +76,25 @@ export function Home() {
   }, [])
 
   return (
-    <>
-      {loginError && loginError}
-      <TextField required inputRef={usernameRef} label="Username" />
-      <TextField
-        required
-        inputRef={passwordRef}
-        label="Password"
-        type="password"
-      />
-      <Button variant="contained" onClick={handleSubmit} type="submit">
-        Log In
-      </Button>
-    </>
+    <Grid container justifyContent="center" my={10}>
+      <Grid container flexDirection="column" xs={6} rowGap={2}>
+        <Typography variant="h4" textAlign="center">
+          Log In
+        </Typography>
+        {loginError && (
+          <Alert severity="error">{errorMessageMap[loginError]}</Alert>
+        )}
+        <TextField required inputRef={usernameRef} label="Username" />
+        <TextField
+          required
+          inputRef={passwordRef}
+          label="Password"
+          type="password"
+        />
+        <Button variant="contained" onClick={handleSubmit} type="submit">
+          Log In
+        </Button>
+      </Grid>
+    </Grid>
   )
 }
