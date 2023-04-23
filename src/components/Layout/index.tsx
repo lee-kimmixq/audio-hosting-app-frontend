@@ -1,4 +1,4 @@
-import { useState, MouseEvent, useEffect } from 'react'
+import { useState, MouseEvent, useEffect, useCallback } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 
 import AppBar from '@mui/material/AppBar'
@@ -8,43 +8,47 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-
 import AccountCircle from '@mui/icons-material/AccountCircle'
+
+import { REACT_APP_BACKEND_URL } from '../../config'
+import { useAuth } from '../../contexts/AuthContext'
 import useFetch from '../../hooks/useFetch'
 
-export function Layout({ isLoggedIn }: { isLoggedIn: boolean }) {
+export function Layout({ isLoggedIn }: { isLoggedIn: boolean | null }) {
   const navigate = useNavigate()
+  const { setAuth } = useAuth()
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
-  const handleMenu = (event: MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
-
   const { data: logoutResponse, renderFetch: logout } = useFetch<{}>(
-    `${process.env.REACT_APP_BACKEND_URL}/user/logout`,
+    `${REACT_APP_BACKEND_URL}/user/logout`,
     'DELETE'
   )
 
-  const handleDashboard = () => {
-    navigate('/dashboard')
-  }
-
-  const handleMyAccount = () => {
-    setAnchorEl(null)
-    navigate('/my-account')
-  }
-
-  const handleLogout = () => {
-    setAnchorEl(null)
-    logout()
-  }
-
   useEffect(() => {
     if (logoutResponse) {
+      setAuth(false)
       navigate('/')
     }
   }, [logoutResponse])
+
+  const handleMenu = useCallback((event: MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }, [])
+
+  const handleDashboard = useCallback(() => {
+    navigate('/dashboard')
+  }, [])
+
+  const handleMyAccount = useCallback(() => {
+    setAnchorEl(null)
+    navigate('/my-account')
+  }, [])
+
+  const handleLogout = useCallback(() => {
+    setAnchorEl(null)
+    logout()
+  }, [])
 
   return (
     <>

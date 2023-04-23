@@ -22,9 +22,28 @@ function PrivateRoute({ children }: { children: ReactElement }) {
   return children
 }
 
+function PublicRoute({ children }: { children: ReactElement }) {
+  const { isLoggedIn } = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/dashboard')
+    }
+  }, [isLoggedIn])
+
+  return children
+}
+
 const privateRoutes = [
   { path: '/dashboard', element: <Dashboard /> },
   { path: '/my-account', element: <MyAccount /> },
+]
+
+const publicRoutes = [
+  { path: '/', element: <Home /> },
+  { path: '/signup', element: <Signup /> },
+  { path: '*', element: <Home /> },
 ]
 
 function App() {
@@ -34,8 +53,6 @@ function App() {
     <div>
       <Routes>
         <Route path="/" element={<Layout isLoggedIn={isLoggedIn} />}>
-          <Route index element={<Home />} />
-          <Route path="/signup" element={<Signup />} />
           {privateRoutes.map(({ path, element }) => (
             <Route
               key={path}
@@ -43,15 +60,13 @@ function App() {
               element={<PrivateRoute>{element}</PrivateRoute>}
             />
           ))}
-
-          <Route
-            path="*"
-            element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            }
-          />
+          {publicRoutes.map(({ path, element }) => (
+            <Route
+              key={path}
+              path={path}
+              element={<PublicRoute>{element}</PublicRoute>}
+            />
+          ))}
         </Route>
       </Routes>
     </div>

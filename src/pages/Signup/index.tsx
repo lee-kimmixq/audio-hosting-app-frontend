@@ -7,8 +7,8 @@ import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
+import { REACT_APP_BACKEND_URL } from '../../config'
 import useFetch from '../../hooks/useFetch'
-import { useAuth } from '../../contexts/AuthContext'
 
 interface SignupPayload {
   username: string
@@ -37,18 +37,12 @@ const errorMessageMap: { [x in SignupError]: string } = {
 }
 
 export function Signup() {
-  const { isLoggedIn } = useAuth()
   const navigate = useNavigate()
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigate('/dashboard')
-    }
-  }, [isLoggedIn])
 
   const usernameRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
   const confirmPasswordRef = useRef<HTMLInputElement>(null)
+
   const [signupSuccess, setSignupSuccess] = useState<boolean>(false)
   const [signupError, setSignupError] = useState<SignupError | null>(null)
 
@@ -58,7 +52,7 @@ export function Signup() {
     error,
     loading,
   } = useFetch<SignupResponse, SignupPayload>(
-    `${process.env.REACT_APP_BACKEND_URL}/user/signup`,
+    `${REACT_APP_BACKEND_URL}/user/signup`,
     'POST'
   )
 
