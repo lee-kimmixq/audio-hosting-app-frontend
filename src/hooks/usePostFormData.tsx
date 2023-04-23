@@ -23,7 +23,6 @@ export default function usePostFormData<T>(url: string) {
 
   const renderFetch = (payload?: FormData) => {
     if (payload) setBody(payload)
-    console.log(payload)
     fetchCount.current += 1
   }
 
@@ -41,7 +40,6 @@ export default function usePostFormData<T>(url: string) {
   useEffect(() => {
     ;(async () => {
       if (!loading) return false
-      console.log(body)
       try {
         setData(undefined)
         setError(null)
