@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { MouseEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import Alert from '@mui/material/Alert'
@@ -66,7 +66,7 @@ export function Home() {
     }
   }, [data, error, loading])
 
-  const handleSubmit = useCallback((event: any) => {
+  const handleSubmit = useCallback((event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
 
     const username = usernameRef.current?.value

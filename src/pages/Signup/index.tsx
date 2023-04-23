@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { MouseEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import Alert from '@mui/material/Alert'
@@ -60,6 +60,15 @@ export function Signup() {
     if (loading) return
     if (data?.signup) {
       setSignupSuccess(true)
+      if (
+        usernameRef.current &&
+        passwordRef.current &&
+        confirmPasswordRef.current
+      ) {
+        usernameRef.current.value = ''
+        passwordRef.current.value = ''
+        confirmPasswordRef.current.value = ''
+      }
     }
     if (error) {
       setSignupSuccess(false)
@@ -75,7 +84,7 @@ export function Signup() {
     }
   }, [data, error, loading])
 
-  const handleSubmit = useCallback((event: any) => {
+  const handleSubmit = useCallback((event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
 
     const username = usernameRef.current?.value

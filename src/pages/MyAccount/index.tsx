@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { MouseEvent, useCallback, useEffect, useRef, useState } from 'react'
 
 import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
@@ -77,7 +77,7 @@ export function MyAccount() {
     changePasswordLoading,
   ])
 
-  const handleSubmit = useCallback((event: any) => {
+  const handleSubmit = useCallback((event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
 
     const newPassword = newPasswordRef.current?.value

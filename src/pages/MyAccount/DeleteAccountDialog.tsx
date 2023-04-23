@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { MouseEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import Alert from '@mui/material/Alert'
@@ -75,7 +75,7 @@ export default function DeleteAccountDialog({
     }
   }, [data, error, loading])
 
-  const handleDelete = useCallback((event: any) => {
+  const handleDelete = useCallback((event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
 
     const password = passwordRef.current?.value

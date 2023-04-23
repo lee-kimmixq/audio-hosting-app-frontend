@@ -9,7 +9,9 @@ import MenuItem from '@mui/material/MenuItem'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import AccountCircle from '@mui/icons-material/AccountCircle'
+import AddIcon from '@mui/icons-material/Add'
 
+import Fab from '@mui/material/Fab'
 import { REACT_APP_BACKEND_URL } from '../../config'
 import { useAuth } from '../../contexts/AuthContext'
 import useFetch from '../../hooks/useFetch'
@@ -50,6 +52,11 @@ export function Layout({ isLoggedIn }: { isLoggedIn: boolean | null }) {
     logout()
   }, [])
 
+  const handleUpload = useCallback(() => {
+    setAnchorEl(null)
+    navigate('/upload')
+  }, [])
+
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -65,6 +72,15 @@ export function Layout({ isLoggedIn }: { isLoggedIn: boolean | null }) {
             </Typography>
             {isLoggedIn && (
               <div>
+                <Fab
+                  size="medium"
+                  variant="extended"
+                  color="info"
+                  onClick={handleUpload}
+                >
+                  <AddIcon sx={{ mr: 1 }} />
+                  Upload
+                </Fab>
                 <IconButton
                   size="large"
                   aria-label="account of current user"

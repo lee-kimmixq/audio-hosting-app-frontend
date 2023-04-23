@@ -4,10 +4,11 @@ import { Routes, Route, useNavigate } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { useAuth } from './contexts/AuthContext'
 
-import { Home } from './pages/Home'
 import { Dashboard } from './pages/Dashboard'
+import { Home } from './pages/Home'
 import { MyAccount } from './pages/MyAccount'
 import { Signup } from './pages/Signup'
+import { Upload } from './pages/Upload'
 
 function PrivateRoute({ children }: { children: ReactElement }) {
   const { isLoggedIn } = useAuth()
@@ -38,6 +39,7 @@ function PublicRoute({ children }: { children: ReactElement }) {
 const privateRoutes = [
   { path: '/dashboard', element: <Dashboard /> },
   { path: '/my-account', element: <MyAccount /> },
+  { path: '/upload', element: <Upload /> },
 ]
 
 const publicRoutes = [
