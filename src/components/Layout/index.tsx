@@ -1,5 +1,5 @@
-import { useState, MouseEvent } from 'react'
-import { Outlet } from 'react-router-dom'
+import { useState, MouseEvent, useEffect } from 'react'
+import { Outlet, useNavigate } from 'react-router-dom'
 
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
@@ -10,24 +10,53 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 
 import AccountCircle from '@mui/icons-material/AccountCircle'
+import useFetch from '../../hooks/useFetch'
 
 export function Layout({ isLoggedIn }: { isLoggedIn: boolean }) {
+  const navigate = useNavigate()
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   const handleMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
 
-  const handleClose = () => {
-    setAnchorEl(null)
+  const { data: logoutResponse, renderFetch: logout } = useFetch<{}>(
+    `${process.env.REACT_APP_BACKEND_URL}/user/logout`,
+    'DELETE'
+  )
+
+  const handleDashboard = () => {
+    navigate('/dashboard')
   }
+
+  const handleMyAccount = () => {
+    setAnchorEl(null)
+    navigate('/my-account')
+  }
+
+  const handleLogout = () => {
+    setAnchorEl(null)
+    logout()
+  }
+
+  useEffect(() => {
+    if (logoutResponse) {
+      navigate('/')
+    }
+  }, [logoutResponse])
 
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ flexGrow: 1, pointerEvents: 'auto', cursor: 'pointer' }}
+              onClick={handleDashboard}
+            >
               Audio Hosting App
             </Typography>
             {isLoggedIn && (
@@ -55,10 +84,10 @@ export function Layout({ isLoggedIn }: { isLoggedIn: boolean }) {
                     horizontal: 'right',
                   }}
                   open={Boolean(anchorEl)}
-                  onClose={handleClose}
+                  onClose={handleMyAccount}
                 >
-                  <MenuItem onClick={handleClose}>Profile</MenuItem>
-                  <MenuItem onClick={handleClose}>My account</MenuItem>
+                  <MenuItem onClick={handleMyAccount}>My Account</MenuItem>
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
               </div>
             )}

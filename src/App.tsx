@@ -6,6 +6,7 @@ import { useAuth } from './contexts/AuthContext'
 
 import { Home } from './pages/Home'
 import { Dashboard } from './pages/Dashboard'
+import { MyAccount } from './pages/MyAccount'
 
 function PrivateRoute({ children }: { children: ReactElement }) {
   const { isLoggedIn } = useAuth()
@@ -20,7 +21,10 @@ function PrivateRoute({ children }: { children: ReactElement }) {
   return children
 }
 
-const privateRoutes = [{ path: '/dashboard', element: <Dashboard /> }]
+const privateRoutes = [
+  { path: '/dashboard', element: <Dashboard /> },
+  { path: '/my-account', element: <MyAccount /> },
+]
 
 function App() {
   const { isLoggedIn } = useAuth()
