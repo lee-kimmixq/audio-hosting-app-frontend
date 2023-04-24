@@ -1,4 +1,6 @@
-# audio-hosting-app-backend
+# Audio Hosting App Frontend
+
+[Link to backend repo](https://github.com/lee-kimmixq/audio-hosting-app-backend)
 
 ## To build docker image
 ```
