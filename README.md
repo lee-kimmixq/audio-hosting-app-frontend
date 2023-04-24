@@ -3,6 +3,8 @@
 [Link to backend repo](https://github.com/lee-kimmixq/audio-hosting-app-backend)
 
 ## To build docker image
+1. Ensure you have the required environment variables in `.env` (refer to `.env.example`)
+2. Build Docker image
 ```
 npm run docker:build
 ```
